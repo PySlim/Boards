@@ -1,0 +1,27 @@
+[
+  {
+    "idlist": 1,
+    "titlelist": "list1",
+    "cards": [
+      {
+        "idcard": 1,
+        "titlecard": "hello",
+        "bodycard": "board"
+      },
+      {
+      "idcard": 2,
+      "titlecard": "two",
+      "bodycard": "other"
+      }
+    ]
+  },
+  {
+    "idlist": 2,
+    "titlelist": "list2",
+    "cards": [
+      {
+
+      }
+    ]
+  }
+]

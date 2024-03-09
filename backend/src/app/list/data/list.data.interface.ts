@@ -4,5 +4,6 @@ import {NextFunction} from "express";
 export interface ListDataInterface extends  Omit<DataInterface, 'List'|'Retrieve'>{
     GetListByBoardId(id: string, params: Object , next: NextFunction):Promise<any>
     GetListByTitleAndUserId(title: string, boardId: string, next: NextFunction):Promise<any>
-    GetListById(id: string, next: NextFunction)
+    GetListById(id: string, next: NextFunction):Promise<any>
+    GetCardByBoardId(id: string, next:NextFunction):Promise<any>
 }

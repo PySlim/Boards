@@ -1,7 +1,7 @@
 import boardApi from "../../../apis/BoardApi/board.api.ts";
 
 export const GetListByBoard = async (id: number)=>{
-    const response = await boardApi.get(`/list/board/${id}`)
+    const response = await boardApi.get(`/list/board/${id}/card?t=${new Date().getTime()}`)
     return response.data.data
 }
 

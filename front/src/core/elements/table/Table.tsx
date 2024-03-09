@@ -22,6 +22,7 @@ const Table = () => {
         try{
             const fetch = async ()=>{
                const listGets =  await GetListByBoard(Number(id))
+                console.log("Esta es la list",listGets)
                 setLists(listGets)
             }
             fetch()
@@ -50,9 +51,9 @@ const Table = () => {
                 <div className={"flex gap-4"}>
                     {
                         lists.map((list, index)=>(
-                            <ListComponent key={index} titleList={list.title} id={list.id}
+                            <ListComponent key={index} titleList={list.titlelist} id={list.idlist}
                                            setIsUpdateLists={setIsUpdateList} isUpdateList={isUpdateList}
-                                           setIsError={setIsError} setErrorMessage={setErrorMessage} />
+                                           setIsError={setIsError} setErrorMessage={setErrorMessage} cards={list.cards}/>
                         ))
                     }
                 </div>

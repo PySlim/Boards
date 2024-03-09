@@ -8,11 +8,11 @@ import {ConstantsResponse} from "../../../constants/constants";
 import BoardData from "../../board/data/board.data";
 import { boardInterfaceData} from "../../board/model/board.object.models";
 
+
 class ListService implements  ListServiceInterface{
 
     private async PropertyChecker(id: string, req: Request ,next : NextFunction){
         const listSearch: listInterfaceData = await ListData.GetListById(id,next)
-        console.log(listSearch)
         if(listSearch) {
             const boardSearch: boardInterfaceData = await BoardData.GetBoardById(listSearch.board_id.toString(), next)
             if(boardSearch.user_id.toString() !== req.id){
@@ -104,6 +104,25 @@ class ListService implements  ListServiceInterface{
        } catch (error) {
            next(error)
        }
+    }
+
+    async GetCardByBoardId(req: Request, next: NextFunction): Promise<any> {
+        try{
+            const boardId = req.params['id']
+            const boardSearch: boardInterfaceData = await BoardData.GetBoardById(boardId,next)
+            if(boardSearch){
+                if(boardSearch.user_id !== Number(req.id)){
+                    ThrowErrorHandler(new ExpressReviewsError('Board is not property to current user',
+                        ConstantsResponse.BAD_REQUEST, 'ValidationError', "Illegal operation"), next)
+                }
+            }else{
+                ThrowErrorHandler(new ExpressReviewsError('Board not exist',
+                    ConstantsResponse.BAD_REQUEST, 'ValidationError', "Illegal operation"), next)
+            }
+            return await ListData.GetCardByBoardId(boardId,next)
+        }catch(error){
+            next(error)
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import {ConstantsResponse} from "../../../constants/constants";
 import {listFieldsValid} from "../model/list.object.models";
 
 
+
 class ListData implements ListDataInterface{
     dataSet: MainQuery = new MainQuery('LIST');
 
@@ -69,6 +70,19 @@ class ListData implements ListDataInterface{
                 ConstantsResponse.INTERNAL_SERVER_ERROR, "DataError", "Data.GetListById", error));
     }
     }
+
+    async GetCardByBoardId(id: string, next: NextFunction): Promise<any> {
+        try{
+            const field: string = 'L.id AS IDLIST, L.TITLE AS TITLELIST, C.ID AS IDCARD, C.TITLE AS TITLECARD, C.BODY AS BODYCARD '
+            const complement: string = `L INNER JOIN BOARD B ON L.BOARD_ID=B.ID INNER JOIN CARD C ON C.LIST_ID=L.ID WHERE B.ID=${id} AND C.STATUS=TRUE `
+            return await this.dataSet.free.exec(field,complement)
+        }catch(error){
+            if (error instanceof ExpressReviewsError) next(error)
+            next(new ExpressReviewsError("Failed to get card by board id.",
+                ConstantsResponse.INTERNAL_SERVER_ERROR, "DataError", "Data.GetCardByBoardId", error));
+        }
+    }
+
 
 }
 

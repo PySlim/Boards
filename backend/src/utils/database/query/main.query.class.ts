@@ -6,6 +6,7 @@ import PaginationQuery from "./pagination.query.class";
 import SelectGroupBy from "./select.group.by";
 import SelectInQueryClass from "./select.in.query.class";
 import SelectInnerQueryClass from "./select.inner.query.class";
+import FreeQuery from "./select.free.class";
 
 class MainQuery{
 
@@ -18,6 +19,7 @@ class MainQuery{
     public selectGroupBy: SelectGroupBy;
     public selectIn: SelectInQueryClass;
     public  selectJoin: SelectInnerQueryClass;
+    public free:FreeQuery
 
     constructor(table: string){
         this.table=table;
@@ -29,6 +31,7 @@ class MainQuery{
         this.selectGroupBy = new SelectGroupBy(this.table);
         this.selectIn = new SelectInQueryClass(this.table);
         this.selectJoin = new SelectInnerQueryClass(this.table);
+        this.free = new FreeQuery(this.table);
     }
 }
 

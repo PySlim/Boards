@@ -5,6 +5,8 @@ import {listSchemaResponse} from "../model/list.response.models";
 import {ConstantsResponse} from "../../../constants/constants";
 import ExpressReviewsError from "../../../utils/error/expressReviewError";
 import ListService from "../service/list.service";
+import {transform} from "../../../utils/response/refactor.response.cardByBoardId";
+
 
 class ListController implements ListControllerInterface{
     async Create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -50,6 +52,24 @@ class ListController implements ListControllerInterface{
         } catch (error) {
              if (error instanceof ExpressReviewsError) next(error)
              next(new ExpressReviewsError("Failed to GetListByUserId  list", ConstantsResponse.INTERNAL_SERVER_ERROR, "ControllerError",'listController.GetListByUserId' ,error));
+        }
+    }
+
+    async GetCardByBoardId(req: Request, res: Response, next: NextFunction): Promise<any> {
+        try{
+            const data = await ListService.GetCardByBoardId(req,next)
+            if(!data) return
+            const dataRefactor = transform(data)
+            const response = {
+                ok: true,
+                message: "Data success",
+                data: dataRefactor,
+                pagination : {}
+            }
+            res.status(ConstantsResponse.OK).json(response)
+        }catch (error) {
+            if (error instanceof ExpressReviewsError) next(error)
+            next(new ExpressReviewsError("Failed to GetCardByBoardId ", ConstantsResponse.INTERNAL_SERVER_ERROR, "ControllerError",'listController.GetCardByBoardId' ,error));
         }
     }
 

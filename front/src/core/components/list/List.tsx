@@ -3,36 +3,23 @@ import point from '../../assets/points.svg'
 import check from '../../assets/check.png'
 import cancel from '../../assets/cancel.png'
 import {CreateCard, GetCardByList, UpdateListFetch} from "./fetch/List.fetch.ts";
-import Card from "../card/card.tsx";
+import {ListPropsInterface} from "./interface/list.props.interface.ts";
+import CardComponent from "../card/card.component.tsx";
 
-export function List(props) {
-    const { titleList, id, setIsUpdateList, isUpdateList, setIsError, setErrorMessage} = props;
+export function List(props:ListPropsInterface) {
+    const { titleList, id, setIsUpdateList, isUpdateList, setIsError, setErrorMessage, cards} = props;
     const [position, setPosition] = useState({left:0, top:0})
     const [showModal, setShowModal] = useState(false)
     const [showEdit, setShowEdit] = useState<boolean>(false)
     const [showEditTitle, setShowEditTitle] = useState(false)
     const [title, setTitle] = useState(titleList)
-    const [cards, setCards] = useState([])
-    const [isCreateCard, setIsCreateCard] = useState(false)
-    //const [isLoading, setIsLoading] = useState(false)
+    const [localCards, setLocalCards] = useState([])
+
 
 
     useEffect(()=>{
-        const fetch = async ()=>{
-            try{
-                const cardsRequest =  await GetCardByList(id)
-                setCards(cardsRequest)
-            }catch (error){
-                const msg = error as string
-                setIsError(true)
-                setErrorMessage(msg)
-            }
-
-        }
-        fetch()
-        console.log("renderizado de lista", id)
-
-    },[isCreateCard])
+        setLocalCards(cards)
+    },[])
 
     return (
         <div className={"w-72 bg-[#F5F5F5] px-2 py-2 rounded-lg"}>
@@ -40,7 +27,7 @@ export function List(props) {
                 React.Children.map(props.children, child =>
                 React.cloneElement(child, {title, setTitle ,setPosition, setShowModal, position, showModal,
                     showEdit, setShowEdit, showEditTitle, setShowEditTitle, setIsUpdateList, isUpdateList, id,
-                setIsError, setErrorMessage, cards, setCards, isCreateCard, setIsCreateCard}))
+                setIsError, setErrorMessage, localCards, setLocalCards}))
             }
         </div>
     );
@@ -65,7 +52,6 @@ function ListTitle ({title, setPosition, setShowModal, showEditTitle, showModal}
         </div>
     )
 }
-
 function ListMenuEditTitle({position, setShowModal, showModal, setShowEditTitle, showEditTitle}){
     if(!showModal) return null
     const closeModal = ()=>{
@@ -81,8 +67,7 @@ function ListMenuEditTitle({position, setShowModal, showModal, setShowEditTitle,
         </div>
     )
 }
-
-function ListEditCard({setShowEdit, showEdit, id, setCards, cards, setIsError, setErrorMessage, isCreateCard, setIsCreateCard}){
+function ListEditCard({setShowEdit, showEdit, id, localCards, setLocalCards, setIsError, setErrorMessage}){
     const [textCard, setTextCard] = useState("")
     const [titleCard, setTitleCard] = useState("")
 
@@ -94,8 +79,12 @@ function ListEditCard({setShowEdit, showEdit, id, setCards, cards, setIsError, s
         if(titleCard === "" || textCard === "" )return
         try{
             const cardCreated = await CreateCard(titleCard,textCard,id)
-            setCards([...cards, cardCreated])
-            setIsCreateCard(!isCreateCard)
+            const cardEdit = {
+                "idcard":cardCreated.id,
+                "bodycard":cardCreated.body,
+                "titlecard":cardCreated.title
+            }
+            setLocalCards([...localCards, cardEdit])
             setTextCard("")
             setTitleCard("")
         }catch (error) {
@@ -133,7 +122,6 @@ function ListEditCard({setShowEdit, showEdit, id, setCards, cards, setIsError, s
         </div>
     )
 }
-
 function ListButtonEditCard ({setShowEdit, showEdit}){
     if(showEdit) return null
     const toggleShowEdit = ()=>{
@@ -184,14 +172,13 @@ function ListEditTitle({showEditTitle, setShowEditTitle, title, setTitle ,setIsU
         </div>
     )
 }
-
-function ListCards({cards, isCreateCard, setIsCreateCard}){
+function ListCards({localCards, setLocalCards}){
 
     return(
             <div>
                 {
-                    cards.map((card, index)=>(
-                        <Card key={index} body={card.body} title={card.title} id={card.id} isCreateCard={isCreateCard} setIsCreateCard={setIsCreateCard}/>
+                    localCards.map((card, index)=>(
+                        <CardComponent key={index} body={card.bodycard} title={card.titlecard} id={card.idcard} localCards={localCards} setLocalCards={setLocalCards}/>
                     ))
                 }
             </div>

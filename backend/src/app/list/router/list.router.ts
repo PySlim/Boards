@@ -22,6 +22,7 @@ class ListRouter implements  RouterInterface{
         this.router.patch('/:id', ValidateIdentityMiddleware(), ValidateRequestMiddleware(listSchemaUpdate), ListController.Update);//updated list
         this.router.delete('/:id', ValidateIdentityMiddleware(), ListController.Destroy)//deleted list
         this.router.get('/board/:id', ValidateIdentityMiddleware(),PaginateMiddleware(), ListController.GetListByBoardId)
+        this.router.get('/board/:id/card', ValidateIdentityMiddleware(),ListController.GetCardByBoardId)
     }
 
 }
